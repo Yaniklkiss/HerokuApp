@@ -2,20 +2,16 @@ package tests;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-public class HerokuAppTest {
-
+public class HerokuAppAddRemoveTest {
     @Test
-    public void herokuAppDropDownTest() {
+    void herokuAppAddRemoveTest() {
         System.setProperty("webdriver.chrome.driver", "src/test/resources/chromedriver.exe");
         ChromeOptions chromeOptions = new ChromeOptions();
         chromeOptions.setHeadless(false);
@@ -24,17 +20,14 @@ public class HerokuAppTest {
         WebDriver driver = new ChromeDriver(chromeOptions);
         driver.manage().window().maximize();
         driver.manage().timeouts().implicitlyWait(20, TimeUnit.SECONDS);
-        driver.get("http://the-internet.herokuapp.com/dropdown");
-        Select select = new Select (driver.findElement(By.id("dropdown")));
-        select.selectByVisibleText("Option 2");
-        String selectedOption = select.getFirstSelectedOption().getText();
-        System.out.println(selectedOption);
-        Assert.assertEquals( selectedOption, "Option 2");
-        driver.quit();
+        driver.get("http://the-internet.herokuapp.com/add_remove_elements/");
+        driver.findElement(By.xpath("//button[text()='Add Element']")).click();
+        driver.findElement(By.xpath("//button[text()='Add Element']")).click();
+        int countOfElements = driver.findElements(By.className("added-manually")).size();
+        Assert.assertEquals(countOfElements,2);
+        driver.findElement(By.xpath("//button[text()='Delete']")).click();
+        countOfElements = driver.findElements(By.className("added-manually")).size();
+        Assert.assertEquals(countOfElements,1);
 
-        List<WebElement> optionsList = select.getOptions();
-        for(WebElement element: optionsList)  {
-            System.out.println(element.getText());
-        }
     }
 }
